@@ -26,6 +26,8 @@ int buttonrecord = 0;
 const int Buzz = 11;
 // const int LED = 13;
 
+int code = 0;
+int buttonUpdate = 0;
 
 unsigned long buttonTime = 0;
 bool buttonPressed = false;
@@ -33,14 +35,7 @@ bool buttonPressed = false;
 void setup()
 {
   Serial.begin(9600);
-  // pinMode(LED, OUTPUT);
-  // pinMode(C5, INPUT);
-  // digitalWrite(C5,HIGH); 
-  
-  // pinMode(LED, OUTPUT);
-  // pinMode(C, INPUT);
-  // digitalWrite(C,HIGH);
-  
+
   pinMode(D, INPUT);
   digitalWrite(D,HIGH);
   
@@ -58,17 +53,28 @@ void setup()
   
   pinMode(B, INPUT);
   digitalWrite(B,HIGH);
-
-  //  digitalWrite(LED,LOW);
-
-  
 }
 
 
 void loop()
  {
+
+  if(code > 999) {
+    Serial.print("Code Entered: ");
+    Serial.println(code);
+    code = 0;
+    tone(Buzz,T_A);
+    delay(100);
+    tone(Buzz,T_E);
+    delay(100);
+    tone(Buzz,T_D);
+    delay(100);
+    buttonPressed = false;
+  }
+
   if (((buttonTime + 2000) < millis()) && buttonPressed)
   {
+    code = 0;
     tone(Buzz,T_D);
     delay(100);
     tone(Buzz,T_E);
@@ -76,17 +82,15 @@ void loop()
     tone(Buzz,T_A);
     delay(100);
     buttonPressed = false;
-    buttonrecord = 0;
-    
+    Serial.println("Code Reset");
   }
-
 
   while(digitalRead(D) == LOW)
   {
     tone(Buzz,T_D);
     buttonTime = millis();
     buttonPressed = true;
-    buttonrecord =1;
+    buttonUpdate = 1;
   } 
 
   while(digitalRead(E) == LOW)
@@ -94,7 +98,7 @@ void loop()
     tone(Buzz,T_E);
     buttonTime = millis();
     buttonPressed = true;
-    buttonrecord =2;
+    buttonUpdate = 2;
   }
 
   while(digitalRead(F) == LOW)
@@ -102,7 +106,7 @@ void loop()
     tone(Buzz,T_F);
     buttonTime = millis();
     buttonPressed = true;
-     buttonrecord =3;
+    buttonUpdate = 3;
   }
 
   while(digitalRead(G) == LOW)
@@ -110,7 +114,7 @@ void loop()
     tone(Buzz,T_G);
     buttonTime = millis();
     buttonPressed = true;
-     buttonrecord =4;
+    buttonUpdate = 4;
   }
 
   while(digitalRead(A) == LOW)
@@ -118,7 +122,7 @@ void loop()
     tone(Buzz,T_A);
     buttonTime = millis();
     buttonPressed = true;
-     buttonrecord =5;
+    buttonUpdate = 5;
   }
 
   while(digitalRead(B) == LOW)
@@ -126,8 +130,18 @@ void loop()
     tone(Buzz,T_B);
     buttonTime = millis();
     buttonPressed = true;
-     buttonrecord =6;
+    buttonUpdate = 6;
   }
-  
+
+  if (buttonUpdate != 0){
+    code = code * 10 + buttonUpdate;
+    buttonUpdate = 0;
+    Serial.print("Code Update: ");
+    Serial.println(code);
+  }
+
+  delay(60);
+
   noTone(Buzz);
+  
   }
