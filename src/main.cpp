@@ -58,6 +58,13 @@ void setup()
 
 void loop()
  {
+if (code == 1234)
+{tone(Buzz,T_A); Serial.println("code big brain man");
+    delay(100);
+    tone(Buzz,T_E);
+    delay(100);
+    tone(Buzz,T_A);
+}
 
   if(code > 999) {
     Serial.print("Code Entered: ");
